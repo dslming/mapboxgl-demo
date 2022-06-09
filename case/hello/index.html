@@ -34,19 +34,61 @@
             var map = new mapboxgl.Map({
                 container: "map",
                 center: [116.435314, 40.960521],
-                zoom: 13,
+                zoom: 5,
                 style: "mapbox://styles/mapbox/streets-v11",
-                hash: true
-                // transformRequest: (url, resourceType) => {
-                //     if (resourceType === "Source" && url.startsWith("http://myHost")) {
-                //         return {
-                //             url: url.replace("http", "https"),
-                //             headers: {"my-custom-header": true},
-                //             credentials: "include" // Include cookies for cross-origin requests
-                //         };
-                //     }
-                // }
+                hash: true,
+                bearing: 0,
+                pitch: 60
             });
+
+            const marker = new mapboxgl.Marker().setLngLat([116.435314, 40.960521]).addTo(map);
+
+            const nav = new mapboxgl.NavigationControl({
+                visualizePitch: true
+            });
+            map.addControl(nav, "bottom-right");
+
+            // const popup = new mapboxgl.Popup({closeOnClick: false}).setLngLat([116.435314, 40.960521]).setHTML("<h1>Hello World!</h1>").addTo(map);
+
+            // add to map
+            // map.addSource("some id", {
+            //     type: "canvas",
+            //     canvas: "idOfMyHTMLCanvas",
+            //     animate: true,
+            //     coordinates: [
+            //         [-76.54, 39.18],
+            //         [-76.52, 39.18],
+            //         [-76.52, 39.17],
+            //         [-76.54, 39.17]
+            //     ]
+            // });
+
+            // update
+            // const mySource = map.getSource("some id");
+            // mySource.setCoordinates([
+            //     [-76.54335737228394, 39.18579907229748],
+            //     [-76.52803659439087, 39.1838364847587],
+            //     [-76.5295386314392, 39.17683392507606],
+            //     [-76.54520273208618, 39.17876344106642]
+            // ]);
+
+            // map.removeSource("some id"); // remove
+            //          // 全图
+            //   map.addControl(new mapboxgl.FullscreenControl());
+
+            //   // 地图导航
+            //   var nav = new mapboxgl.NavigationControl();
+            //   map.addControl(nav, "top-left");
+
+            //   // 比例尺
+            //   var scale = new mapboxgl.ScaleControl({
+            //     maxWidth: 80,
+            //     unit: "imperial"
+            //   });
+            //   map.addControl(scale);
+            //   scale.setUnit("metric");
+
+            window.map = map;
         </script>
     </body>
 </html>

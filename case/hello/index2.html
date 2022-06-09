@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+
+        <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet" />
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            #map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+            mapboxgl.accessToken = "pk.eyJ1IjoiZHNsbWluZyIsImEiOiJjanh0dDBocGgweTV5M2hxb28zcjY4Mmd4In0.tRr3uZqVjS2oKDgI5krHVg";
+
+            // style文件
+            const style = {
+                version: 8,
+                // 数据源Source
+                sources: {
+                    composite: {
+                        url: "mapbox://mapbox.mapbox-streets-v8,mapbox.mapbox-terrain-v2",
+                        type: "vector"
+                    }
+                },
+                // 字体
+                glyphs: "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+                // 图层layer
+                layers: [
+                    {
+                        id: "landuse",
+                        type: "fill",
+                        // 通过source属性将layer和source关联起来
+                        source: "composite",
+                        // 指定数据源下哪一类数据
+                        "source-layer": "landuse",
+                        layout: {},
+                        paint: {
+                            "fill-color": "rgb(222, 222, 222)",
+                            "fill-opacity": 0.8
+                        }
+                    }
+                ]
+            };
+            var map = new mapboxgl.Map({
+                container: "map", // 对应上一步创建的id名称
+                style, // 将style传入
+                center: [116.39104843139647, 39.912287369097186], //地图初始化时，定位的位置
+                zoom: 15 // 缩放级别
+            });
+
+            // addBase(map);
+
+            // 鼠标左键
+            map.on("click", e => {
+                // e 内返回点击事件本身，点击的对象，经纬度等信息
+                console.log(`点击的经纬度： ${e.lngLat}`);
+            });
+            // 鼠标右键
+            map.on("contextmenu", () => {
+                // 一般用来实现地图右键菜单
+            });
+
+            map.setLayoutProperty("country-label", "text-field", ["get", `name_${language}`]);
+
+            function addBase(map) {
+                // geojson格式数据
+                // 点
+                const pointData = {
+                    type: "FeatureCollection",
+                    features: [
+                        {
+                            type: "Feature",
+                            properties: {},
+                            geometry: {
+                                type: "Point",
+                                coordinates: [116.39104843139647, 39.912287369097186]
+                            }
+                        }
+                    ]
+                };
+                // 线
+                const lineData = {
+                    type: "FeatureCollection",
+                    features: [
+                        {
+                            type: "Feature",
+                            properties: {},
+                            geometry: {
+                                type: "LineString",
+                                coordinates: [
+                                    [116.38540506362915, 39.91115171447854],
+                                    [116.3856840133667, 39.90613156632883],
+                                    [116.3971424102783, 39.906510147702974],
+                                    [116.39682054519652, 39.9116290208874]
+                                ]
+                            }
+                        }
+                    ]
+                };
+                // 面
+                const polygonData = {
+                    type: "FeatureCollection",
+                    features: [
+                        {
+                            type: "Feature",
+                            properties: {},
+                            geometry: {
+                                type: "Polygon",
+                                coordinates: [
+                                    [
+                                        [116.38752937316895, 39.907859855577165],
+                                        [116.39570474624634, 39.907859855577165],
+                                        [116.39570474624634, 39.91083076519556],
+                                        [116.38752937316895, 39.91083076519556],
+                                        [116.38752937316895, 39.907859855577165]
+                                    ]
+                                ]
+                            }
+                        }
+                    ]
+                };
+                // 添加数据源
+                map.addSource("point", {
+                    type: "geojson",
+                    data: pointData
+                });
+                map.addSource("line", {
+                    type: "geojson",
+                    data: lineData
+                });
+                map.addSource("polygon", {
+                    type: "geojson",
+                    data: polygonData
+                });
+                // 添加图层
+                map.addLayer({
+                    id: "point",
+                    type: "symbol",
+                    source: "point",
+                    layout: {
+                        "icon-size": 3, //图标大小
+                        "icon-image": "museum-15" //图片名称
+                    },
+                    paint: {}
+                });
+                map.addLayer({
+                    id: "line",
+                    type: "line",
+                    source: "line",
+                    layout: {},
+                    paint: {
+                        "line-color": "#fbb03b", //线颜色
+                        "line-width": 2.5 // 线宽
+                    }
+                });
+                map.addLayer({
+                    id: "polygon",
+                    type: "fill",
+                    source: "polygon",
+                    layout: {},
+                    paint: {
+                        "fill-color": "#fbb03b", //面颜色
+                        "fill-opacity": 0.7 // 面透明度
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

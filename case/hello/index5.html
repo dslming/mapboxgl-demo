@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Change a map's language</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+        <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet" />
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            #map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+            mapboxgl.accessToken = "pk.eyJ1IjoiZHNsbWluZyIsImEiOiJjanh0dDBocGgweTV5M2hxb28zcjY4Mmd4In0.tRr3uZqVjS2oKDgI5krHVg";
+
+            //天地图（各个区域的token可以在网上查到）
+            var vecUrl = "http://t0.tianditu.com/vec_w/wmts?tk=43c28dc109e34f25445bfe9fef5124dc";
+            var cvaUrl = "http://t0.tianditu.com/cva_w/wmts?tk=43c28dc109e34f25445bfe9fef5124dc";
+
+            var tdtCva = {
+                //类型为栅格瓦片
+                type: "raster",
+                //请求瓦片地址
+                tiles: [cvaUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=cva&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"],
+                //分辨率
+                tileSize: 256
+            };
+            const map = new mapboxgl.Map({
+                container: "map", //容器id
+                style: {
+                    //设置版本号，一定要设置
+                    version: 8,
+                    //添加来源
+                    sources: {
+                        tdtVec: {
+                            type: "raster",
+                            tiles: [vecUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"],
+                            tileSize: 256
+                        },
+                        tdtCva: tdtCva
+                    },
+                    layers: [
+                        {
+                            //图层id，要保证唯一性
+                            id: "tdtVec",
+                            //图层类型
+                            type: "raster",
+                            //数据源
+                            source: "tdtVec",
+                            //图层最小缩放级数
+                            minzoom: 0,
+                            //图层最大缩放级数
+                            maxzoom: 17
+                        },
+                        {
+                            id: "tdtCva",
+                            type: "raster",
+                            source: "tdtCva",
+                            minzoom: 0,
+                            maxzoom: 17
+                        }
+                    ]
+                }, //相关样式配置查看文档
+                crs: "EPSG:4326",
+                center: [116.3621, 39.9066], // starting position
+                zoom: 12, //地图等级
+                maxZoom: 17, //最大等级
+                attributionControl: false
+            });
+        </script>
+    </body>
+</html>
