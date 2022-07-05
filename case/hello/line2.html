@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Fit to the bounds of a LineString</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+        <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet" />
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            #map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <style>
+            .btn-control {
+                font: bold 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+                background-color: #3386c0;
+                color: #fff;
+                position: absolute;
+                top: 20px;
+                left: 50%;
+                z-index: 1;
+                border: none;
+                width: 200px;
+                margin-left: -100px;
+                display: block;
+                cursor: pointer;
+                padding: 10px 20px;
+                border-radius: 3px;
+            }
+
+            .btn-control:hover {
+                background-color: #4ea0da;
+            }
+        </style>
+        <div id="map"></div>
+        <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+        <button id="zoomto" class="btn-control">Zoom to bounds</button>
+        <script>
+            mapboxgl.accessToken = "pk.eyJ1IjoiZHNsbWluZyIsImEiOiJjanh0dDBocGgweTV5M2hxb28zcjY4Mmd4In0.tRr3uZqVjS2oKDgI5krHVg";
+
+            let map = new mapboxgl.Map({
+                container: "map",
+                style: "mapbox://styles/mapbox/light-v10",
+                center: [-77.0214, 38.897],
+                zoom: 12
+            });
+
+            const icon =
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAWCAMAAAC13D+jAAADAFBMVEWs1eL/0T7+zTv+lwD81FfXqSZNNA/84nXSixXJt5kjS2z/uCn8rBVxz+yn09/mtymmvMavxrX9sxn/zTLnxmrJ9v/+uzNarMOHqsb1vGb9ynuDwdK7ycn7t0r85WpMpLuHrLn/4kDFmiRUaYL9xDT/0THlgAH01XH9rSz/1ULHqWP723N3ucv+2D/7wWeyoVTbs1S02uWP1OzIp1OidDBNjKe46vyYtKjit2n/zSzmmzncvWlzTAf/3UFrtMgwg6+4rJb+ogGtkVr/swiSxtr/5j76xG7VsVOQrKxXXFnx0Wimwuola5T84Fztx5fglxw5PDPftVBXu9r9v0f/rgmWn5a3l1adbhP/0Tmftcbltljqu4WDdl3w6eGs5fmepJj2qSupiD2wvLN7pbXTtF//98f4pC321m+rwsT63Wv9+vZXam/Cq4zFsIz/2zVxe3X+xC1rwtqgdhvomjDtwXr/qwL/0mS/pGH31GPtvHn/0y3m07vByZXUqVf/0y+smGv/80X900r/1D293OY1JgrnqVnx49LM5Ov5uFT/0Cr0oi/69vP9/PpkWCxrmbr/1znz1XjTrk7YtVt1udPdul+64u6bn5D/5i4aJSj/z3i4hSfm/v/322ry///vnir/0CzbjSTVrWSw2d328ej933r2v2j/1C//0C/kvjC/kkGukkCBmJeu2OK+spbZ6vDT/f+hutbCfgrz3HXxrTPFlkvtkATzhwDnp03RzLvvs0d3kZ6SsKj/yh6MsrmRqbD/2Y7zqSL/5n3/ryb/1CvlwmOOu8D5wlpoodNqvtz/+VCoiE1ZveCgilVovfO/j0SZj3KEm7VRscpWXmjOq1JNZFzv0njxxST3zSj/wCT/zSLekzDPy8T/yWv+4E56gXSjo5KrsJW4qI6jz9/swpDxu275zJf33LiWwszqy6Hx06zz0nD/pwr/7UsKDhADHDHrw00+FQD9yDcROFiXbSrtz2ysjizmsWuzkiW7lzRghaZkkKRgZ1dwm7322Wdgi4X///+RNRZLAAABAHRSTlP///8AU/cHJQAAAAlwSFlzAAAOwwAADsMBx2+oZAAAAB1pVFh0U29mdHdhcmUAAAAAAEFkb2JlIEltYWdlUmVhZHkGrQKXAAADD2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMTQgNzkuMTUxNDgxLCAyMDEzLzAzLzEzLTEyOjA5OjE1ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo2NUZGMDA3MTYwREExMUVDOURGOEIxQTMwNjhFRTA1OCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo2NUZGMDA3MDYwREExMUVDOURGOEIxQTMwNjhFRTA1OCIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgV2luZG93cyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSIxREI5NjEzNURBODA0MkYzMzk5NDA4NzZFN0YzQkM2RCIgc3RSZWY6ZG9jdW1lbnRJRD0iMURCOTYxMzVEQTgwNDJGMzM5OTQwODc2RTdGM0JDNkQiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6ffRDqAAADEklEQVQ4jWP4jx/clstCF2L4/z/rxZMSKT09PckylqV6ICB5Z2bwsaVA4CZ5J4r//ZOZM0sqS0AgunoxWEvb1lLn0ln15eXlNqe0gGS5lkWijdZCIKi1eFI7q4Vt68aNN4SEhHh4XjtKRb8Eaune+nrlOZ5ZvxQUFGZkH00GAQHPtwICkZGRGySUL3l63vP4M4PflgkIPnKLpbY++89Q+dpfouYai/vEie4ik4DEJPdJKSnWl42NjbVYe3fJNMeZma3nCnf9+PEjE5Omqm6jWhZDcciWDMX+L1fVweCV9hLtgweXpKunp6dP6NdfP3cqHwOfqLJNAyMj00cVlY8qeY5+DPNe18uoRqgergKDZVWdVZadnctA7MPTE71nr+FjYBD9yebaxMioqanJVMCy8xtDF3PoGuEIRiwgwvXrhtmGDHx8ZhIBEboQsWWbcrYzpG3dx4ddC6Pr98i57e3NDFNdAvhtIUKqc3KsgFoUFglHaGpi06JkGufyaF3z1EcB/IpwLcVALRKLhJtUVLDoUVTaFScur/PIkCGAFablb84CiJZ+MTEsWlyVfom2M9jZXbwI17I8MxekZS/QYbrYHfaTV8fQkGGNHdxhQC23QN5fY4nD+0p9RnZ20jouCO/PZ+e0AgUyzhD7YW8kLS8uftEeFsjCe5YAtcxzPP9cNaJuWR0SmF9VNX9+Z+f0VfZGk4FaTvuwKTZFRAhbMv31lYtqZZgXErY3r9/rixcS0E5P1wYCW/2zhXbi4uK8XDYNTI2NLOxy7L6KwATzrdT/eM31iqjAwECvI+4GIDBRZMKkKVOmWPP3/tE5EXQ6iPdT0UldX7m7cnerbjZu62ZYzPz6jBOP0mpzc/OAfMHdICD4u0UwCQgyLijnZ1/5Z2r/bsUbzSbVjwU3hFJlHwOzWDVzqbOQyer4+GlsMQ+mAcH9tTFsD9c6AAFnrtPnD2wcReEF3Nzchw5p8Ox/Gg3OyLGVO2VlNTQ00sTEEjRAIIE7+MCBBDBQ2azvLsZU1tHhBgJLH7dB8j4C9GCydsgtRi8uAEXmog5wB7NZAAAAAElFTkSuQmCC";
+            const arrow =
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAnElEQVQ4T63TsQ0CMQyF4f/NgMQQ0CBR0FIx190cFIiWhhFoKdgEiRUeSoF0gO8cjkub+Evs2OLPpc9422dgBRwlNZn/BtjeApdOUJsh0QuuwKYWiYAFcAKWHaSR1EbpfAHlkO0ICdMJgV+QXmAAmUu6v9IZA8wkPVKgtg7TF7H25t4UbN+A9ahGmqqVD8AO2GdzUF45+I3ZJJb9JxbwRhEhB66xAAAAAElFTkSuQmCC";
+
+            class AnimationRoute {
+                constructor(map, json, play = true) {
+                    this._map = map;
+                    this._json = json;
+                    this._play = play;
+                    this.init();
+                }
+
+                init() {
+                    this._index = 0;
+                    this._count = 1500;
+                    this._step = turf.length(this._json) / this._count;
+                    this._flag = 0;
+                    this._playId = "play-" + Date.now();
+
+                    // 添加路径图层
+                    this._map.addSource(this._playId, {
+                        type: "geojson",
+                        data: this._json
+                    });
+                    this._map.addLayer({
+                        id: this._playId,
+                        type: "line",
+                        source: this._playId,
+                        layout: {
+                            "line-cap": "round",
+                            "line-join": "round"
+                        },
+                        paint: {
+                            "line-color": "#aaaaaa",
+                            "line-width": 10
+                        }
+                    });
+                    // 添加已播放路径
+                    this._map.addSource(this._playId + "-played", {
+                        type: "geojson",
+                        data: this._json
+                    });
+                    this._map.addLayer({
+                        id: this._playId + "-played",
+                        type: "line",
+                        source: this._playId + "-played",
+                        layout: {
+                            "line-cap": "round",
+                            "line-join": "round"
+                        },
+                        paint: {
+                            "line-color": "#09801a",
+                            "line-width": 30
+                        }
+                    });
+
+                    // 添加路径上的箭头
+                    this._map.loadImage(arrow, (error, image) => {
+                        if (error) throw error;
+                        this._map.addImage(this._playId + "-arrow", image);
+                        this._map.addLayer({
+                            id: this._playId + "-arrow",
+                            source: this._playId,
+                            type: "symbol",
+                            layout: {
+                                "symbol-placement": "line",
+                                "symbol-spacing": 50,
+                                "icon-image": this._playId + "-arrow",
+                                "icon-size": 0.6,
+                                "icon-allow-overlap": true
+                            }
+                        });
+                    });
+
+                    // 添加动态图标
+                    // this._map.loadImage(arrow, (error, image) => {
+                    //     if (error) throw error;
+                    //     this._map.addImage(this._playId + "-icon", image);
+                    //     this._map.addSource(this._playId + "-point", {
+                    //         type: "geojson",
+                    //         data: this._getDataByCoords()
+                    //     });
+                    //     this._map.addLayer({
+                    //         id: this._playId + "-point",
+                    //         source: this._playId + "-point",
+                    //         type: "symbol",
+                    //         layout: {
+                    //             "icon-image": this._playId + "-icon",
+                    //             "icon-size": 0.75,
+                    //             "icon-allow-overlap": true,
+                    //             "icon-rotation-alignment": "map",
+                    //             "icon-pitch-alignment": "map",
+                    //             "icon-rotate": 50
+                    //         }
+                    //     });
+                    // this._animatePath();
+                    // });
+                }
+
+                _animatePath() {
+                    if (this._index > this._count) {
+                        window.cancelAnimationFrame(this._flag);
+                    } else {
+                        const coords = turf.along(this._json, this._step * this._index).geometry.coordinates;
+                        // 已播放的线
+                        const start = turf.along(this._json, 0).geometry.coordinates;
+                        this._map.getSource(this._playId + "-played").setData(turf.lineSlice(start, coords, this._json));
+
+                        // 车的图标位置
+                        this._map.getSource(this._playId + "-point").setData(this._getDataByCoords(coords));
+                        // 计算旋转角度
+                        const nextIndex = this._index === this._count ? this._count - 1 : this._index + 1;
+                        const coordsNext = turf.along(this._json, this._step * nextIndex).geometry.coordinates;
+                        let angle = turf.bearing(turf.point(coords), turf.point(coordsNext)) - 90;
+                        if (this._index === this._count) angle += 180;
+                        this._map.setLayoutProperty(this._playId + "-point", "icon-rotate", angle);
+
+                        this._index++;
+                        if (this._play)
+                            this._flag = requestAnimationFrame(() => {
+                                this._animatePath();
+                            });
+                    }
+                }
+
+                _getDataByCoords(coords) {
+                    if (!coords || coords.length !== 2) return null;
+                    return turf.point(coords, {
+                        label: this._formatDistance(this._step * this._index)
+                    });
+                }
+
+                _formatDistance(dis) {
+                    if (dis < 1) {
+                        dis = dis * 1000;
+                        return dis.toFixed(0) + "米";
+                    } else {
+                        return dis.toFixed(2) + "千米";
+                    }
+                }
+
+                destory() {
+                    window.cancelAnimationFrame(this._flag);
+                    if (this._map.getSource(this._playId + "-point")) {
+                        this._map.removeLayer(this._playId + "-point");
+                        // this._map.removeLayer(this._playId + '-label')
+                        this._map.removeSource(this._playId + "-point");
+                    }
+                    if (this._map.getSource(this._playId)) {
+                        this._map.removeLayer(this._playId);
+                        this._map.removeSource(this._playId);
+                    }
+                }
+            }
+
+            const geojson = {
+                type: "FeatureCollection",
+                features: [
+                    {
+                        type: "Feature",
+                        geometry: {
+                            type: "LineString",
+                            properties: {},
+                            coordinates: [
+                                [-77.0366048812866, 38.89873175227713],
+                                [-77.03364372253417, 38.89876515143842],
+                                [-77.0366048812866, 38.89983285227713]
+                                // [-77.03364372253417, 38.89549195896866],
+                                // [-77.02982425689697, 38.89549195896866],
+                                // [-77.02400922775269, 38.89387200688839],
+                                // [-77.01519012451172, 38.891416957534204],
+                                // [-77.01521158218382, 38.892068305429156],
+                                // [-77.00813055038452, 38.892051604275686],
+                                // [-77.00832366943358, 38.89143365883688],
+                                // [-77.00818419456482, 38.89082405874451],
+                                // [-77.00815200805664, 38.88989712255097]
+                            ]
+                        }
+                    }
+                ]
+            };
+
+            map.on("load", () => {
+                new AnimationRoute(map, geojson);
+            });
+        </script>
+    </body>
+</html>
