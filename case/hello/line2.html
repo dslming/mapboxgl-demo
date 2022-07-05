@@ -4,8 +4,8 @@
         <meta charset="utf-8" />
         <title>Fit to the bounds of a LineString</title>
         <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-        <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet" />
-        <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+        <link href="./lib/mapboxgl/mapbox-gl.css" rel="stylesheet" />
+        <script src="./lib/mapboxgl/mapbox-gl-dev.js"></script>
         <style>
             body {
                 margin: 0;
@@ -94,41 +94,41 @@
                         }
                     });
                     // 添加已播放路径
-                    this._map.addSource(this._playId + "-played", {
-                        type: "geojson",
-                        data: this._json
-                    });
-                    this._map.addLayer({
-                        id: this._playId + "-played",
-                        type: "line",
-                        source: this._playId + "-played",
-                        layout: {
-                            "line-cap": "round",
-                            "line-join": "round"
-                        },
-                        paint: {
-                            "line-color": "#09801a",
-                            "line-width": 30
-                        }
-                    });
+                    // this._map.addSource(this._playId + "-played", {
+                    //     type: "geojson",
+                    //     data: this._json
+                    // });
+                    // this._map.addLayer({
+                    //     id: this._playId + "-played",
+                    //     type: "line",
+                    //     source: this._playId + "-played",
+                    //     layout: {
+                    //         "line-cap": "round",
+                    //         "line-join": "round"
+                    //     },
+                    //     paint: {
+                    //         "line-color": "#09801a",
+                    //         "line-width": 30
+                    //     }
+                    // });
 
                     // 添加路径上的箭头
-                    this._map.loadImage(arrow, (error, image) => {
-                        if (error) throw error;
-                        this._map.addImage(this._playId + "-arrow", image);
-                        this._map.addLayer({
-                            id: this._playId + "-arrow",
-                            source: this._playId,
-                            type: "symbol",
-                            layout: {
-                                "symbol-placement": "line",
-                                "symbol-spacing": 50,
-                                "icon-image": this._playId + "-arrow",
-                                "icon-size": 0.6,
-                                "icon-allow-overlap": true
-                            }
-                        });
-                    });
+                    // this._map.loadImage(arrow, (error, image) => {
+                    //     if (error) throw error;
+                    //     this._map.addImage(this._playId + "-arrow", image);
+                    //     this._map.addLayer({
+                    //         id: this._playId + "-arrow",
+                    //         source: this._playId,
+                    //         type: "symbol",
+                    //         layout: {
+                    //             "symbol-placement": "line",
+                    //             "symbol-spacing": 50,
+                    //             "icon-image": this._playId + "-arrow",
+                    //             "icon-size": 0.6,
+                    //             "icon-allow-overlap": true
+                    //         }
+                    //     });
+                    // });
 
                     // 添加动态图标
                     // this._map.loadImage(arrow, (error, image) => {
