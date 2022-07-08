@@ -43,7 +43,7 @@
             }
         </style>
         <div id="map"></div>
-        <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+        <script src="./lib/turf.min.js"></script>
         <button id="zoomto" class="btn-control">Zoom to bounds</button>
         <script>
             mapboxgl.accessToken = "pk.eyJ1IjoiZHNsbWluZyIsImEiOiJjanh0dDBocGgweTV5M2hxb28zcjY4Mmd4In0.tRr3uZqVjS2oKDgI5krHVg";
@@ -73,7 +73,7 @@
                     this._count = 1500;
                     this._step = turf.length(this._json) / this._count;
                     this._flag = 0;
-                    this._playId = "play-" + Date.now();
+                    this._playId = "play-source";
 
                     // 添加路径图层
                     this._map.addSource(this._playId, {
@@ -81,7 +81,7 @@
                         data: this._json
                     });
                     this._map.addLayer({
-                        id: this._playId,
+                        id: this._playId+"-line",
                         type: "line",
                         source: this._playId,
                         layout: {
