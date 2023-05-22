@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Display a map on a webpage</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+        <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            #map {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+        <script>
+
+            mapboxgl.accessToken = 'pk.eyJ1IjoiZHNsbWluZyIsImEiOiJjanh0dDBocGgweTV5M2hxb28zcjY4Mmd4In0.tRr3uZqVjS2oKDgI5krHVg';;
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+
+                center: [118.1517713497023, 39.63166152545793],
+                zoom: 11,
+                pitch: 0,
+                bearing: 0,
+                antialias: true,
+                minZoom: 11,
+                maxZoom: 17,
+            });
+
+
+            map.on('load', function () {
+
+                map.addLayer({
+                    "id": "points1",
+                    "type": "symbol",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": [
+                                {
+                                    "type": "Feature",
+                                    "properties": {
+                                        "MyBuildName": "小资范"
+                                    },
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [118.1421332866658, 39.6822710275781]
+                                    }
+                                },
+                                {
+                                    "type": "Feature",
+                                    "properties": {
+                                        "MyBuildName": "POLO SPORT"
+                                    },
+                                    "geometry": {
+                                        "type": "Point",
+                                        "coordinates": [118.1421332866658, 39.6922710275781]
+                                    }
+                                },
+                            ]
+                        }
+                    },
+                    "layout": {
+                        "text-field": "{MyBuildName}",//文本内容来源字段
+                        "text-font": ["Open Sans Regular"],//字体
+                        "text-offset": [0, 1.25],//设置图标与图标注相对之间的距离
+                        "text-anchor": "top",//标记文本相对于定位点的位置
+                        "text-size": 16,//字号
+                        'icon-image': 'school',
+                        // 'background-color': '#f00',
+                    },
+                    paint: {
+                        // 文字描边
+                        'text-halo-color': '#fff',
+                        'text-halo-width': 2,
+                        "text-color": "#f00",
+                        "icon-opacity": 1, // 图标的不透明度（可选，取值范围为 0 ~ 1，默认值为 1）
+                        "icon-color": "#000000",
+                        "icon-halo-color": "rgba(0,0,0,0)", // 图标的光晕颜色（可选，默认值为 rgba(0,0,0,0)）
+                        "icon-halo-width": 5,
+                    },
+                });
+            });
+        </script>
+
+    </body>
+
+</html>
