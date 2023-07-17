@@ -51,7 +51,7 @@
         console.error(123);
         map.addLayer({
           id: 'polygon2',
-          type: 'fill',
+          type: 'fill-extrusion', // fill,fill-extrusion
           source: {
             type: 'geojson',
             data: {
@@ -89,15 +89,18 @@
             }
           },
           paint: {
-            'fill-color': '#0f0',
-            'fill-opacity': 0.5,
-            'fill-outline-color': '#f00',
+            // 'fill-color': '#0f0',
+            // 'fill-opacity': 0.5,
+            // 'fill-outline-color': '#f00',
+            'fill-extrusion-height': 50,
+            'fill-extrusion-opacity': 0.5,
+            'fill-extrusion-color': '#0f0'
           }
         });
 
         map.addLayer({
           id: 'polygon',
-          type: 'fill',
+          type: 'fill-extrusion',
           source: {
             type: 'geojson',
             data: {
@@ -132,9 +135,12 @@
             }
           },
           paint: {
-            'fill-color': '#f00',
-            'fill-opacity': 0.5,
-            'fill-outline-color': '#f00'
+            // 'fill-color': '#f00',
+            // 'fill-opacity': 0.5,
+            // 'fill-outline-color': '#f00'
+            'fill-extrusion-height': 10,
+            'fill-extrusion-opacity': 0.5,
+            'fill-extrusion-color': '#f00'
           }
         });
 
