@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Display a map on a webpage</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <!-- <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' /> -->
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <script>
+
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZHNsbWluZyIsImEiOiJjanh0dDBocGgweTV5M2hxb28zcjY4Mmd4In0.tRr3uZqVjS2oKDgI5krHVg';;
+      const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+
+        center: [24.625020533858077,
+          11.319277371461936],
+        zoom: 5,
+        pitch: 0,
+        bearing: 0,
+        antialias: true,
+        minZoom: 1,
+        maxZoom: 30,
+        projection: "globe"
+      });
+
+
+      map.on('load', function () {
+        console.error(123);
+        map.addLayer({
+          id: 'polygon2',
+          type: 'fill',
+          source: {
+            type: 'geojson',
+            data: {
+              type: 'Feature',
+              "properties": {
+                "height": 100
+              },
+              geometry: {
+                type: 'Polygon',
+                coordinates: [
+                  [
+                    [
+                      18.183398729993513,
+                      21.714086247802683
+                    ],
+                    [
+                      4.875725474675534,
+                      21.714086247802683
+                    ],
+                    [
+                      4.875725474675534,
+                      6.825683497288679
+                    ],
+                    [
+                      18.183398729993513,
+                      6.825683497288679
+                    ],
+                    [
+                      18.183398729993513,
+                      21.714086247802683
+                    ]
+                  ]
+                ]
+              }
+            }
+          },
+          paint: {
+            'fill-color': '#0f0',
+            'fill-opacity': 0.5,
+            'fill-outline-color': '#f00',
+          }
+        });
+
+        map.addLayer({
+          id: 'polygon',
+          type: 'fill',
+          source: {
+            type: 'geojson',
+            data: {
+              type: 'Feature',
+              geometry: {
+                type: 'Polygon',
+                coordinates: [
+                  [
+                    [
+                      24.625020533858077,
+                      11.319277371461936
+                    ],
+                    [
+                      10.55501763046945,
+                      11.319277371461936
+                    ],
+                    [
+                      10.55501763046945,
+                      -3.642979901200036
+                    ],
+                    [
+                      24.625020533858077,
+                      -3.642979901200036
+                    ],
+                    [
+                      24.625020533858077,
+                      11.319277371461936
+                    ]
+                  ]
+                ]
+              }
+            }
+          },
+          paint: {
+            'fill-color': '#f00',
+            'fill-opacity': 0.5,
+            'fill-outline-color': '#f00'
+          }
+        });
+
+
+
+      })
+
+
+        //   map.addSource('polygons', {
+        //     type: 'geojson',
+        //     data: data
+        //   });
+
+        //   map.addLayer({
+        //     id: 'polygon1',
+        //     type: 'fill',
+        //     source: 'polygons',
+        //     paint: {
+        //       'fill-color': '#f00',
+        //       'fill-opacity': 0.5,
+        //       'fill-outline-color': '#f00'
+        //     },
+        //     filter: ['==', '$id', '0']
+        //   });
+
+        //   map.addLayer({
+        //     id: 'polygon2',
+        //     type: 'fill',
+        //     source: 'polygons',
+        //     paint: {
+        //       'fill-color': '#0f0',
+        //       'fill-opacity': 0.5,
+        //       'fill-outline-color': '#0f0'
+        //     },
+        //     filter: ['==', '$id', '1']
+        //   });
+        // });
+    </script>
+
+  </body>
+
+</html>
